@@ -1,0 +1,114 @@
+POST http://127.0.0.1:5000/api/v1/login
+Content-Type: application/json
+User-Agent: vsc -- 2 --
+
+{
+    "email": "ee-5@ya.ru",
+    "password": "superpass"
+}
+###
+POST http://127.0.0.1:5000/api/v1/user_crud
+Content-Type: application/json
+
+{   
+    "name": "admin7",
+    "email": "bb-7@ya.ru",
+    "password": "password4",
+    "password2": "password4"
+}
+###
+PUT http://127.0.0.1:5000/api/v1/user_crud
+Content-Type: application/json
+
+{   
+    "name": "admin6",
+    "email": "bb-6@ya.ru",
+    "pass_old": "password6",
+    "password": "password7",
+    "password2": "password7"
+}
+###
+POST http://127.0.0.1:5000/api/v1/login
+Content-Type: application/json
+User-Agent: vsc -- 1 --
+
+{
+    "email": "bb-7@ya.ru",
+    "password": "password4"
+}
+###
+GET http://127.0.0.1:5000/api/v1/history_auth
+Content-Type: application/json
+User-Agent: vsc -- 1 --
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjY4NjQ1OSwianRpIjoiOWZlOWRlNTAtZjA5OC00ODFhLTg2OTEtM2U3OGZhY2EyOGQwIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiIyMzQ0MjUzMi03ZDIzLTRjYzQtOWUzYi1lNDNjZGQ4ODgxMDAiLCJuYmYiOjE2NzI2ODY0NTksImV4cCI6MTY3NTI3ODQ1OSwidWEiOjEwMjc2MzQ5NDIsImVtYWlsIjoiYmItN0B5YS5ydSIsInJvbGVzIjpbXX0.ZrARXb1BdAtU1WDPORFS0SfD5K2pyyWk7SObsuqHJgc
+
+###
+DELETE http://127.0.0.1:5000/api/v1/logout
+Content-Type: application/json
+User-Agent: vsc -- 1 --
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MzExNDc3MywianRpIjoiNzQ3NGJjNjgtZGM2Zi00YTFmLTllMTMtNzAwY2Y1YmU1YWFkIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiIyMzQ0MjUzMi03ZDIzLTRjYzQtOWUzYi1lNDNjZGQ4ODgxMDAiLCJuYmYiOjE2NzMxMTQ3NzMsImV4cCI6MTY3NTcwNjc3MywidWEiOjEwMjc2MzQ5NDIsImVtYWlsIjoiYmItN0B5YS5ydSIsInJvbGVzIjpbXX0.L-iXe4RxoNeGMOzRj7u1xCX0vENjyldZ33P6aKSanJ8
+
+###
+POST http://127.0.0.1:5000/api/v1/refresh
+Content-Type: application/json
+User-Agent: vsc -- 1 --
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjY4NjQ1OSwianRpIjoiOWZlOWRlNTAtZjA5OC00ODFhLTg2OTEtM2U3OGZhY2EyOGQwIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiIyMzQ0MjUzMi03ZDIzLTRjYzQtOWUzYi1lNDNjZGQ4ODgxMDAiLCJuYmYiOjE2NzI2ODY0NTksImV4cCI6MTY3NTI3ODQ1OSwidWEiOjEwMjc2MzQ5NDIsImVtYWlsIjoiYmItN0B5YS5ydSIsInJvbGVzIjpbXX0.ZrARXb1BdAtU1WDPORFS0SfD5K2pyyWk7SObsuqHJgc
+###
+DELETE http://127.0.0.1:5000/api/v1/logout_all
+Content-Type: application/json
+User-Agent: vsc -- 3 --
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjY4MzkxMSwianRpIjoiNGQ3ZTkxYTUtNjU1MC00ZjE3LThmZWYtOWE4NGRmNzYyNDYxIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiJkYjBkNzIzZi1jNWJmLTQwOWMtYmIyMS1jZjhhNzU3MGEzNTAiLCJuYmYiOjE2NzI2ODM5MTEsImV4cCI6MTY3NTI3NTkxMSwidWEiOjI1MzgxOTI1MDEsImVtYWlsIjoiYmItNkB5YS5ydSIsInJvbGVzIjpbXX0.laShGtnk5m4u3Xw7aZVp1vy4M9LsdF8afqc-xtozR2Y
+###
+POST http://127.0.0.1:5000/api/v1/add_role_for_user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjcxMDUwOCwianRpIjoiNDlmOTBiM2YtNTYzNS00NWRlLTliZjktZDE0NTU4ZWQ3MmMwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImQ2YjRkNDhhLTExYTgtNDI0NC1iMTA2LWUzMmE3MjI4ZTk3NyIsIm5iZiI6MTY3MjcxMDUwOCwiZXhwIjoxNjcyNzE0MTA4LCJ1YSI6ODA0NjQxMDQwLCJlbWFpbCI6ImVlLTVAeWEucnUiLCJyb2xlcyI6WyJzdXBlcnVzZXIiXX0.I-E0yZ9tWM4wHuZpaMggFgNh-5-U3DRzpyP6bspM5Ko
+
+{
+    "user": "admin7",
+    "role": "admin2"
+}
+
+###
+DELETE http://127.0.0.1:5000/api/v1/delete_role_from_user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjcxMDUwOCwianRpIjoiNDlmOTBiM2YtNTYzNS00NWRlLTliZjktZDE0NTU4ZWQ3MmMwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImQ2YjRkNDhhLTExYTgtNDI0NC1iMTA2LWUzMmE3MjI4ZTk3NyIsIm5iZiI6MTY3MjcxMDUwOCwiZXhwIjoxNjcyNzE0MTA4LCJ1YSI6ODA0NjQxMDQwLCJlbWFpbCI6ImVlLTVAeWEucnUiLCJyb2xlcyI6WyJzdXBlcnVzZXIiXX0.I-E0yZ9tWM4wHuZpaMggFgNh-5-U3DRzpyP6bspM5Ko
+
+{
+    "user": "admin7",
+    "role": "admin2"
+}
+
+###
+GET http://127.0.0.1:5000/api/v1/get_user_roles/admin
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MzE5NDEzOSwianRpIjoiZjIwNjY3MDQtNGFmOS00MDQzLWFmM2QtODJmZmJhNDQ5MGEyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImQ2YjRkNDhhLTExYTgtNDI0NC1iMTA2LWUzMmE3MjI4ZTk3NyIsIm5iZiI6MTY3MzE5NDEzOSwiZXhwIjoxNjczMTk3NzM5LCJ1YSI6MjY1MzQyMzc3OSwiZW1haWwiOiJlZS01QHlhLnJ1Iiwicm9sZXMiOlsic3VwZXJ1c2VyIl19.CXCyXrfVqV6M96w3mBe3xZ3MaRsWSm5XxMmhvpilGaE
+
+###
+GET http://127.0.0.1:5000/api/v1/role_crud
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjcxMDUwOCwianRpIjoiNDlmOTBiM2YtNTYzNS00NWRlLTliZjktZDE0NTU4ZWQ3MmMwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImQ2YjRkNDhhLTExYTgtNDI0NC1iMTA2LWUzMmE3MjI4ZTk3NyIsIm5iZiI6MTY3MjcxMDUwOCwiZXhwIjoxNjcyNzE0MTA4LCJ1YSI6ODA0NjQxMDQwLCJlbWFpbCI6ImVlLTVAeWEucnUiLCJyb2xlcyI6WyJzdXBlcnVzZXIiXX0.I-E0yZ9tWM4wHuZpaMggFgNh-5-U3DRzpyP6bspM5Ko
+###
+PUT http://127.0.0.1:5000/api/v1/role_crud
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjcxMDUwOCwianRpIjoiNDlmOTBiM2YtNTYzNS00NWRlLTliZjktZDE0NTU4ZWQ3MmMwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImQ2YjRkNDhhLTExYTgtNDI0NC1iMTA2LWUzMmE3MjI4ZTk3NyIsIm5iZiI6MTY3MjcxMDUwOCwiZXhwIjoxNjcyNzE0MTA4LCJ1YSI6ODA0NjQxMDQwLCJlbWFpbCI6ImVlLTVAeWEucnUiLCJyb2xlcyI6WyJzdXBlcnVzZXIiXX0.I-E0yZ9tWM4wHuZpaMggFgNh-5-U3DRzpyP6bspM5Ko
+
+{
+    "old_role": "admin2",
+    "new_role": "admin3"
+}
+###
+POST http://127.0.0.1:5000/api/v1/role_crud
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjcxMDUwOCwianRpIjoiNDlmOTBiM2YtNTYzNS00NWRlLTliZjktZDE0NTU4ZWQ3MmMwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImQ2YjRkNDhhLTExYTgtNDI0NC1iMTA2LWUzMmE3MjI4ZTk3NyIsIm5iZiI6MTY3MjcxMDUwOCwiZXhwIjoxNjcyNzE0MTA4LCJ1YSI6ODA0NjQxMDQwLCJlbWFpbCI6ImVlLTVAeWEucnUiLCJyb2xlcyI6WyJzdXBlcnVzZXIiXX0.I-E0yZ9tWM4wHuZpaMggFgNh-5-U3DRzpyP6bspM5Ko
+
+{
+    "role": "admin2"
+}
+###
+DELETE  http://127.0.0.1:5000/api/v1/role_crud
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjcxMDUwOCwianRpIjoiNDlmOTBiM2YtNTYzNS00NWRlLTliZjktZDE0NTU4ZWQ3MmMwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImQ2YjRkNDhhLTExYTgtNDI0NC1iMTA2LWUzMmE3MjI4ZTk3NyIsIm5iZiI6MTY3MjcxMDUwOCwiZXhwIjoxNjcyNzE0MTA4LCJ1YSI6ODA0NjQxMDQwLCJlbWFpbCI6ImVlLTVAeWEucnUiLCJyb2xlcyI6WyJzdXBlcnVzZXIiXX0.I-E0yZ9tWM4wHuZpaMggFgNh-5-U3DRzpyP6bspM5Ko
+
+{
+    "role": "admin3"
+}

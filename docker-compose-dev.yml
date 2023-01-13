@@ -1,0 +1,44 @@
+# docker-compose-test.yml
+version: '3'
+
+services:
+  db:
+    image: postgres:13-alpine
+    container_name: db
+    env_file: 
+      - ./prod.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    env_file: 
+      - ./prod.env
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+
+  flask_auth:
+    build: .
+    image: flask_auth-image
+    container_name: flask_auth
+    environment:
+      - PYTHONPATH=/flask_auth
+    env_file:
+      - ./prod.env
+    working_dir: /flask_auth
+    depends_on:
+      - redis
+      - db
+    restart: always
+    # command: bash
+    ports:
+      - 5000:5000
+
+volumes:
+  postgres_data:
+  redis_data:

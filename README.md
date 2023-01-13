@@ -1,3 +1,26 @@
+# Для проверки:
+    https://github.com/ZOMini/Auth_sprint_1 - репозиторий
+    https://github.com/ZOMini/Auth_sprint_1/invitations - приглашение
+    группа 13 - Пирогов Виталий/Игорь Синякин/Малик Гасанов (@malikzevs @ee2 @sinyakinmail - в пачке) 
+
+# Запуск:
+  - docker-compose:
+    - docker-compose -f docker-compose-test.yml up --build
+    - docker-compose -f docker-compose-prod.yml up --build
+    - docker-compose -f docker-compose-dev.yml up --build
+  - локально:
+    -  останавливаем контейнер flask_auth, из выше запущенных, оставляем redis и bd
+    -  в терминале:
+    -  pip install -r requirements.txt
+    -  из папки /flask_auth: python app.py
+    -  http://127.0.0.1:5000/docs/v1/ - Swagger docs
+    -  http://127.0.0.1:5000/api/v1/   + ручки
+    -  примеры заросов [requests.http](https://github.com/ZOMini/Auth_sprint_1/blob/main/requests.http) - это для [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) под VSCode - в PyCharm сами решайте как тестить.
+
+# DEV:
+  - 13.01.23 начал
+    - добавил env TESTS и модифицировал тротлинг декоратор, чтобы тротлинг отключался в тестах.
+
 # Проектная работа 7 спринта
 
 Упростите регистрацию и аутентификацию пользователей в Auth-сервисе, добавив вход через социальные сервисы. Список сервисов выбирайте исходя из целевой аудитории онлайн-кинотеатра — подумайте, какими социальными сервисами они пользуются. Например, использовать [OAuth от Github](https://docs.github.com/en/free-pro-team@latest/developers/apps/authorizing-oauth-apps){target="_blank"} — не самая удачная идея. Ваши пользователи не разработчики и вряд ли имеют аккаунт на Github. А вот добавить Twitter, Facebook, VK, Google, Yandex или Mail будет хорошей идеей.
