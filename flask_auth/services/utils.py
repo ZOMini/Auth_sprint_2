@@ -1,4 +1,6 @@
 import logging
+import secrets
+import string
 from datetime import datetime, timedelta
 from functools import wraps
 from http import HTTPStatus as HTTP
@@ -88,3 +90,9 @@ def throttling_user_agent(*req_roles : str):
                     return jsonify(msg='Try again later'), HTTP.FORBIDDEN
         return decorator
     return wrapper
+
+def generate_password(length):
+    letters_and_digits = string.ascii_letters + string.digits
+    crypt_rand_string = ''.join(secrets.choice(
+        letters_and_digits) for i in range(length))
+    return crypt_rand_string

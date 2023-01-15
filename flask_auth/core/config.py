@@ -27,6 +27,13 @@ class Settings(BaseSettings):
     SUPERUSER_EMAIL: str = Field(...) 
     SUPERUSER_PASSWORD: str = Field(...)
     TESTS: bool = Field(False)
+    YANDEX_CLIENT_ID: str = Field(None)
+    YANDEX_CLIENT_SECRET: str = Field(None)
+    YANDEX_ACCESS_TOKEN_URL: str = Field('https://oauth.yandex.ru/token')
+    YANDEX_AUTHORIZE_URL: str = Field('https://oauth.yandex.ru/authorize')
+    YANDEX_API_BASE_URL: str = Field('https://login.yandex.ru/info')
+    YANDEX_USERINFO_URL : str = Field('https://login.yandex.ru/info?format=json')
+
 
     class Config:
         env_file = '../.env'

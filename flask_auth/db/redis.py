@@ -16,7 +16,7 @@ class CacheStorage(ABC):
         pass
 
     @abstractmethod
-    def remove(self, key: str):
+    def delete(self, key: str):
         pass
 
 
@@ -34,7 +34,7 @@ class RedisStorage(CacheStorage):
     def set(self, key: str, value: str, ex: int, **kwargs):
         self.redis.set(key, json.dumps(value), ex)
 
-    def remove(self, key: str, **kwargs):
+    def delete(self, key: str, **kwargs):
         self.redis.delete(key)
 
 redis = Redis(host=SETT.REDIS_HOST, port=SETT.REDIS_PORT, db=0, decode_responses=True)

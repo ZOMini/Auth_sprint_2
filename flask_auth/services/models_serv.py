@@ -183,7 +183,7 @@ class AuthServ(Auth):
                 jwt_redis_blocklist.set(refresh_token, "", ex=expire_time)
 
     @classmethod
-    def login_refresh_service(cls, user: User, login: bool = False) -> list[str]:
+    def login_refresh_service(cls, user: User, login: bool = False) -> tuple[str, str]:
         '''Метод для login/refresh endpoints.
         При логине: создает новую пару токенов, добавляет запись в журнал Auth,
         добавляет старые ключи(для user_agent) в блоклист.
