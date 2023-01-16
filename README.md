@@ -6,10 +6,10 @@
 # Запуск:
   - oauth - update:
     - 1-я проблема локально не подебажить под виндой, так как gunicorn под виндой не пашет, т.е. только в докере/linux
-    - 2-я что бы callback-и прилетали от провайдера, нужен открытый порт на роутере(я в роутере прописал NAT) - [router](https://github.com/ZOMini/Auth_sprint_1/blob/main/router.jpg)
+    - 2-я что бы callback-и прилетали от провайдера, нужен открытый порт на роутере(я в роутере прописал NAT) - [router](https://github.com/ZOMini/Auth_sprint_2/blob/main/router.jpg)
     - В общем при регистрации своего приложения/сайта у провайдера(yandex,mail, и т.д.) нужно указывать redirect_uri, в котором твой внешний ip и внешний порт который прокинули выше, иначе тестить не получится, хотя можно тупо воткнуть кабель с инетом в комп и принимать все, но это такое)...
     - Так как начал использовать[authlib](https://docs.authlib.org/en/latest/client/flask.html) то советую начать с одного провайдера(google or twitter) для них есть почти готовые решения и много стороннего материала по настройке authlib, в отличии от того же yandex/vk, там все методом научного тыка.
-    - Тестировал тупо в браузере http://____.____.____.____:5000/api/v1/oauth_login?provider=vk  or  http://____.____.____.____:5000/api/v1/oauth_login?provider=yandex - должны прилететь пара старых добрых jwt токенов.
+    - Тестировал тупо в браузере http://{your ip}:5000/api/v1/oauth_login?provider=vk  or  http://{your_ip}:5000/api/v1/oauth_login?provider=yandex - должны прилететь пара старых добрых jwt токенов.
   - docker-compose:
     - docker-compose -f docker-compose-test.yml up --build
     - docker-compose -f docker-compose-prod.yml up --build
