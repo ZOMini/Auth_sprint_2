@@ -18,3 +18,13 @@ def init_oauth(app):
         # scope=['openid','profile','email'],
         # client_kwargs={'scope': 'openid profile email'},
     )
+    oauth.register(
+        'vk',
+        response_type='code',
+        client_id=settings.VK_CLIENT_ID,
+        client_secret=settings.VK_CLIENT_SECRET,
+        api_base_url=settings.VK_API_BASE_URL,
+        access_token_url=settings.VK_ACCESS_TOKEN_URL,
+        authorize_url=settings.VK_AUTHORIZE_URL,
+        client_kwargs={"token_placement": "uri", "token_endpoint_auth_method": "client_secret_post", "scope": "email"}
+    )
