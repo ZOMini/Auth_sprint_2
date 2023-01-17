@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     YANDEX_AUTHORIZE_URL: str = Field('https://oauth.yandex.ru/authorize')
     YANDEX_API_BASE_URL: str = Field('https://login.yandex.ru/info')
     YANDEX_USERINFO_URL : str = Field('https://login.yandex.ru/info?format=json')
+    YANDEX_UNSUBSCRIBE_PAGE : str = Field('https://passport.yandex.ru/profile/access')
     
     VK_CLIENT_ID: str = Field(None)
     VK_CLIENT_SECRET: str = Field(None)
@@ -41,6 +42,7 @@ class Settings(BaseSettings):
     VK_AUTHORIZE_URL: str = Field('https://oauth.vk.com/authorize')
     VK_API_BASE_URL: str = Field('https://api.vk.com/method')
     VK_USERINFO_URL : str = Field('https://api.vk.com/method/users.get?v=5.131')
+    VK_UNSUBSCRIBE_PAGE : str = Field('https://vk.com/settings?act=apps')
 
 
     class Config:

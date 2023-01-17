@@ -56,15 +56,18 @@ class OauthServ:
             userinfo = oauth_app.get(settings.VK_USERINFO_URL)
             logging.error('-----tokeninfo----- %s', oauth_app.token)
             logging.error('-----tokeninfo_email----- %s', oauth_app.token.get('email'))
-            userinfo_dict: dict = userinfo.json()["response"][0]
+            userinfo_dict: dict = userinfo.json()['response'][0]
             logging.error('-----userinfo_dict----- %s', userinfo_dict)
-            return SocialUserModel(username=userinfo_dict.get('first_name')+'_'+userinfo_dict.get('last_name')+'-'+userinfo_dict.get('id'),
+            return SocialUserModel(username=userinfo_dict.get('first_name')+'_'+userinfo_dict.get('last_name')+'-'+str(userinfo_dict.get('id')),
                                    email=oauth_app.token.get('email'))
 
     @classmethod
     def check_and_create_account(cls, oauth_app: FlaskOAuth2App):
         '''Метод проверяет есть ли пользователь в базе, если нет - создает,
-        возращает пару токенов для стандартного логина.'''
+        возращает пару токенов для стандартного логина.
+        Вся движуха расчитана на уникальность email'a, так же расчет на то,
+        что если емаил есть в соцсети то он прошел валидацию и user его
+        подтвердил.'''
         user_info = OauthServ.get_user_info(oauth_app)
         if user := UserServ.get_obj_by_name(user_info.email, True):
             pass

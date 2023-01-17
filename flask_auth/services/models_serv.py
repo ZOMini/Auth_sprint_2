@@ -21,7 +21,7 @@ from services.utils import token_expire_time, user_agent_hash
 class UserServ(User):
 
     @classmethod
-    def get_obj_by_name(cls, name: str, email: bool = False) -> Self | None:
+    def get_obj_by_name(cls, name: str, email: bool = False) -> User | None:
         '''Отдает обект по имени. Опционально по емайлу.'''
         if email:
             return db_session.query(User).filter(User.email == name).one_or_none()

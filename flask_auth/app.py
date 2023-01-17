@@ -8,14 +8,16 @@ sys.path.append(BASE_DIR)
 sys.path.append(f'{BASE_DIR}\\flask_auth')
 # logging.error('-- DEBUG -- BASE DIR -- %s',  BASE_DIR)
 # logging.error('-- DEBUG -- PYTHONPATH -- %s',  sys.path)
+from core.tracer import configure_tracer
 
-from authlib.integrations.flask_client import OAuth
+configure_tracer()
 
 from api.v1.auth import auth
 from api.v1.oauth import oauth
 from api.v1.role import role
 from core.config import app, settings
 from core.oauth import init_oauth
+from core.tracer import init_tracer
 from db.db import init_db
 from docs.app import init_docs
 from services.jwt import *  # Регистрируем JWT
@@ -26,6 +28,7 @@ app.register_blueprint(auth, url_prefix="/api/v1")
 app.register_blueprint(oauth, url_prefix="/api/v1")
 init_docs()
 init_oauth(app)
+init_tracer(app)
 
 if settings.DEBUG:
     from create_superuser import create_superuser
