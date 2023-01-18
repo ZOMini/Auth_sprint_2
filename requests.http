@@ -1,3 +1,15 @@
+GET http://127.0.0.1/auth/api/v1/check_user
+Content-Type: application/json
+User-Agent: vsc -- 1 --
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3NDAzNjcwOSwianRpIjoiYTA4YWQ4YWUtNDA0Yy00MTRjLWJmNzYtNzI1MjAwNjgwN2IxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6Ijc1YzgzMWRmLTU1OTUtNDJiOS1hOGNkLTMxMDgzOWZhZTlkMiIsIm5iZiI6MTY3NDAzNjcwOSwiZXhwIjoxNjc0MDQwMzA5LCJ1YSI6MjY1MzQyMzc3OSwiZW1haWwiOiJlZS0xMkB5YS5ydSIsInJvbGVzIjpbXX0.4uT-ODQl4pW3XwNNqYCn73wsE7LSirDVn6ONlS9mNFk
+
+###
+GET http://127.0.0.1/movies_fastapi/api/v1/films/
+Content-Type: application/json
+User-Agent: vsc -- 1 --
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3NDAzNjcwOSwianRpIjoiYTA4YWQ4YWUtNDA0Yy00MTRjLWJmNzYtNzI1MjAwNjgwN2IxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6Ijc1YzgzMWRmLTU1OTUtNDJiOS1hOGNkLTMxMDgzOWZhZTlkMiIsIm5iZiI6MTY3NDAzNjcwOSwiZXhwIjoxNjc0MDQwMzA5LCJ1YSI6MjY1MzQyMzc3OSwiZW1haWwiOiJlZS0xMkB5YS5ydSIsInJvbGVzIjpbXX0.4uT-ODQl4pW3XwNNqYCn73wsE7LSirDVn6ONlS9mNFk
+
+###
 POST http://127.0.0.1:5000/api/v1/login
 Content-Type: application/json
 User-Agent: vsc -- 2 --

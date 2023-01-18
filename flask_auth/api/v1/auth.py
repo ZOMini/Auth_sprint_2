@@ -218,3 +218,8 @@ def history_auth():
     size = int(request.args.get('size', default=5))
     history = AuthServ.history_auth(jwt_dict['sub'], page, size)
     return jsonify(history_auth = history)
+
+@auth.route("/check_user", methods=["GET"])
+@jwt_required()
+def check_user():
+  return jsonify(), HTTP.OK

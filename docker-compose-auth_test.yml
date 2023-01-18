@@ -6,7 +6,7 @@ services:
     image: postgres:13-alpine
     container_name: auth_db
     env_file: 
-      - ./flask_auth/.env
+      - ./.env
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
@@ -16,7 +16,7 @@ services:
     image: redis:alpine
     container_name: redis
     env_file: 
-      - ./flask_auth/.env
+      - ./.env
     volumes:
       - redis_data:/data
     ports:

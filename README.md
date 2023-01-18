@@ -15,6 +15,7 @@
     - docker-compose -f docker-compose-auth_test.yml up --build
     - docker-compose -f docker-compose-auth_prod.yml up --build
     - docker-compose -f docker-compose-auth_dev.yml up --build
+    - docker-compose -f docker-compose-all_serv_prod.yml up --build
   - локально:
     -  UPD!!! social_auth локально работать не будет!!!
     -  останавливаем контейнер flask_auth, из выше запущенных, оставляем redis и bd
