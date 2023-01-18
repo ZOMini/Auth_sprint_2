@@ -25,7 +25,7 @@
     -  http://127.0.0.1:5000/auth/api/v1/   + ручки
     -  примеры заросов [requests.http](https://github.com/ZOMini/Auth_sprint_1/blob/main/requests.http) - это для [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) под VSCode - в PyCharm сами решайте как тестить.
     -  Доступ к PG: в терминале {docker exec -it auth_db sh} в шеле: {psql -U app -h localhost -d auth_db}   {pw:123qwe} - SELECT * FROM users;
-    -  Доступ к redis: в терминале {docker exec -it redis sh} в шеле: {redis-cli} - keys *;
+    -  Доступ к redis: в терминале {docker exec -it redis sh} в шеле: {redis-cli} - {keys *};
 
 # DEV:
   - 13.01.23 начал
