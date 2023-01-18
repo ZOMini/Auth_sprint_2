@@ -2,8 +2,8 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
 
-SWAGGER_URL = '/docs/v1'
-API_URL = '/swagger/v1'
+SWAGGER_URL = '/auth/docs/v1'
+API_URL = '/auth/swagger/v1'
 VERSION = '1.0.0'
 CONFIG = {
     'layout': 'BaseLayout'

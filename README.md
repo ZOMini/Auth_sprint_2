@@ -1,6 +1,6 @@
 # Для проверки:
-    https://github.com/ZOMini/Auth_sprint_1 - репозиторий
-    https://github.com/ZOMini/Auth_sprint_1/invitations - приглашение
+    https://github.com/ZOMini/Auth_sprint_2 - репозиторий
+    https://github.com/ZOMini/Auth_sprint_2/invitations - приглашение
     группа 13 - Пирогов Виталий/Игорь Синякин/Малик Гасанов (@malikzevs @ee2 @sinyakinmail - в пачке) 
 
 # Запуск:
@@ -9,20 +9,23 @@
     - 2-я что бы callback-и прилетали от провайдера, нужен открытый порт на роутере(я в роутере прописал NAT) - [router](https://github.com/ZOMini/Auth_sprint_2/blob/main/router.jpg)
     - В общем при регистрации своего приложения/сайта у провайдера(yandex,mail, и т.д.) нужно указывать redirect_uri, в котором твой внешний ip и внешний порт который прокинули выше, иначе тестить не получится, хотя можно тупо воткнуть кабель с инетом в комп и принимать все, но это такое)...
     - Так как начал использовать [authlib](https://docs.authlib.org/en/latest/client/flask.html), то советую начать с одного провайдера(google or twitter), для них есть почти готовые решения и много стороннего материала по настройке authlib, в отличии от того же yandex/vk, там все методом научного тыка.
-    - Тестировал тупо в браузере http://{your ip}:5000/api/v1/oauth_login?provider=vk  or  http://{your_ip}:5000/api/v1/oauth_login?provider=yandex - должны прилететь пара старых добрых jwt токенов.(у вас работать не будет, нужно либо мне прописать ваши redirect_uri, либо вам создать приложения у yandex'а / vk, и от туда брать id и secret - менять их в .env и прописывать свои redirect_uri на странице вашего приложения у поставщика данных).
+    - Тестировал тупо в браузере http://{your ip}:5000/auth/api/v1/oauth_login?provider=vk  or  http://{your_ip}:5000/auth/api/v1/oauth_login?provider=yandex - должны прилететь пара старых добрых jwt токенов.(у вас работать не будет, нужно либо мне прописать ваши redirect_uri, либо вам создать приложения у yandex'а / vk, и от туда брать id и secret - менять их в .env и прописывать свои redirect_uri на странице вашего приложения у поставщика данных).
     - Обратите внимание на core.oauth.py - там регистрируются настройки провайдера(поставщика данных).
   - docker-compose:
-    - docker-compose -f docker-compose-test.yml up --build
-    - docker-compose -f docker-compose-prod.yml up --build
-    - docker-compose -f docker-compose-dev.yml up --build
+    - docker-compose -f docker-compose-auth_test.yml up --build
+    - docker-compose -f docker-compose-auth_prod.yml up --build
+    - docker-compose -f docker-compose-auth_dev.yml up --build
   - локально:
+    -  UPD!!! social_auth локально работать не будет!!!
     -  останавливаем контейнер flask_auth, из выше запущенных, оставляем redis и bd
     -  в терминале:
     -  pip install -r requirements.txt
     -  из папки /flask_auth: python app.py
-    -  http://127.0.0.1:5000/docs/v1/ - Swagger docs
-    -  http://127.0.0.1:5000/api/v1/   + ручки
+    -  http://127.0.0.1:5000/auth/docs/v1/ - Swagger docs
+    -  http://127.0.0.1:5000/auth/api/v1/   + ручки
     -  примеры заросов [requests.http](https://github.com/ZOMini/Auth_sprint_1/blob/main/requests.http) - это для [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) под VSCode - в PyCharm сами решайте как тестить.
+    -  Доступ к PG: в терминале {docker exec -it auth_db sh} в шеле: {psql -U app -h localhost -d auth_db}   {pw:123qwe} - SELECT * FROM users;
+    -  Доступ к redis: в терминале {docker exec -it redis sh} в шеле: {redis-cli} - keys *;
 
 # DEV:
   - 13.01.23 начал

@@ -13,12 +13,13 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str = Field(...)
     DB_DOCKER_HOST: str = Field(...) 
     POSTGRES_PORT: int = Field(...)
+
     REDIS_HOST: str = Field(...)
     REDIS_PORT: int = Field(...)
     REDIS_URL: str = Field(...)
+
     FLASK_SECRET_KEY: str = Field(...)
     JWT_SECRET_KEY: str = Field(...)
-    DEBUG: bool = Field(...)
     JWT_ACCESS_TOKEN_EXPIRES: int = Field(...)  # Часов
     JWT_REFRESH_TOKEN_EXPIRES: int = Field(...)  # Дней
     THROTTLING: int = Field(...)  # Секунд
@@ -26,6 +27,8 @@ class Settings(BaseSettings):
     SUPERUSER_NAME: str = Field(...) 
     SUPERUSER_EMAIL: str = Field(...) 
     SUPERUSER_PASSWORD: str = Field(...)
+
+    DEBUG: bool = Field(False)
     TESTS: bool = Field(False)
     
     YANDEX_CLIENT_ID: str = Field(None)
@@ -44,9 +47,8 @@ class Settings(BaseSettings):
     VK_USERINFO_URL : str = Field('https://api.vk.com/method/users.get?v=5.131')
     VK_UNSUBSCRIBE_PAGE : str = Field('https://vk.com/settings?act=apps')
 
-
     class Config:
-        env_file = '../.env'
+        env_file = './.env'
         env_file_encoding = 'utf-8'
 
 settings = Settings()

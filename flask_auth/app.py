@@ -23,9 +23,9 @@ from docs.app import init_docs
 from services.jwt import *  # Регистрируем JWT
 
 init_db()
-app.register_blueprint(role, url_prefix="/api/v1")
-app.register_blueprint(auth, url_prefix="/api/v1")
-app.register_blueprint(oauth, url_prefix="/api/v1")
+app.register_blueprint(role, url_prefix="/auth/api/v1")
+app.register_blueprint(auth, url_prefix="/auth/api/v1")
+app.register_blueprint(oauth, url_prefix="/auth/api/v1")
 init_docs()
 init_oauth(app)
 init_tracer(app)

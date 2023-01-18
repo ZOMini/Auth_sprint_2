@@ -15,27 +15,28 @@ from core.config import settings
 
 
 def configure_tracer() -> None:
-    trace.set_tracer_provider(TracerProvider(resource=Resource({'service.name': 'Auth API'})))
-    trace.get_tracer_provider().add_span_processor(
-        BatchSpanProcessor(
-            JaegerExporter(
-                agent_host_name='jagger',
-                agent_port=6831,
+    if not settings.DEBUG: # отключаем если не prod
+        trace.set_tracer_provider(TracerProvider(resource=Resource({'service.name': 'Auth API'})))
+        trace.get_tracer_provider().add_span_processor(
+            BatchSpanProcessor(
+                JaegerExporter(
+                    agent_host_name='jagger',
+                    agent_port=6831,
+                )
             )
         )
-    )
-    # Чтобы видеть трейсы в консоли
-    # trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
+        # Чтобы видеть трейсы в консоли
+        # trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
 
 def init_tracer(app):
+    if not settings.DEBUG: # отключаем если не prod
+        FlaskInstrumentor().instrument_app(app)
 
-    FlaskInstrumentor().instrument_app(app)
-
-    @app.before_request
-    def before_request():
-        request_id = request.headers.get('X-Request-Id')
-        if not request_id:
-            raise RuntimeError('request id is required')
+        @app.before_request
+        def before_request():
+            request_id = request.headers.get('X-Request-Id')
+            if not request_id:
+                raise RuntimeError('request id is required')
     
     
 
