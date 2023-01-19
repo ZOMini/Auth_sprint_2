@@ -57,13 +57,11 @@ app.include_router(persons.router, prefix='/movies_fastapi/api/v1/persons',
 async def check_user(request: Request, call_next):
     # документация доступна без jwt. ну и тесты не переписывать же)
     if request.url.path in [app.docs_url, app.openapi_url] or settings.tests:
-        logging.error('INFO settings.tests - %s', settings.tests)
-        logging.error('INFO request.url - %s', request.url)
         return await call_next(request)
     headers = request.headers
     async with aiohttp.ClientSession() as client:
         resp = await client.get(settings.check_user_url, headers=headers)
-        logging.error('INFO MIDDLEWARE status_resp - %s', resp.status)
+        # logging.error('INFO MIDDLEWARE status_resp - %s', resp.status)
         if resp.status == 200:
             response = await call_next(request)
             return response

@@ -44,6 +44,7 @@
     - http://127.0.0.1/movies_fastapi/api/openapi#/ - документация. доступна без авторизации, остальное только по токену.
     - токен можно взять в докум ниже (create_user затем login)
   - flask_auth(API):
+    - http://127.0.0.1:16686/ - jaeger ui
     - http://127.0.0.1/auth/docs/v1/ - документация
     - http://127.0.0.1/auth/docs/v1/#/Auth/post_auth_api_v1_login -логин (суперюзер(с доступом ко всем ручкам):  superuser/superpass  - либо правим .env)
 
