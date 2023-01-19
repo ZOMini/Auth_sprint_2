@@ -43,7 +43,7 @@ async def shutdown():
     await redis.redis.close()
     await elastic.es.close()
 
-JWT_scheme = HTTPBearer(auto_error=False)
+JWT_scheme = HTTPBearer(auto_error=not settings.tests)
 
 app.include_router(films.router, prefix='/movies_fastapi/api/v1/films',
                    tags=['films'], dependencies=[Depends(JWT_scheme)])
