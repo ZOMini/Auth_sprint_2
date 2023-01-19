@@ -28,9 +28,32 @@
     -  Доступ к PG: в терминале {docker exec -it auth_db sh} в шеле: {psql -U app -h localhost -d auth_db}   {pw:123qwe} - SELECT * FROM users;
     -  Доступ к redis: в терминале {docker exec -it redis sh} в шеле: {redis-cli} - {keys *};
 
-# DEV:
-  - 13.01.23 начал
-    - добавил env TESTS и модифицировал тротлинг декоратор, чтобы тротлинг отключался в тестах.
+# Что имеем(на 19.01.23):
+  - tests:
+    - docker-compose -f docker-compose-auth_test.yml up --build      - тесты flask_auth
+    - docker-compose -f docker-compose-api_test.yml up --build      - тесты movies_api
+  - запуск всех сервисов:
+    - docker-compose -f docker-compose-all_serv_prod.yml up --build
+  - django admin panel:
+    - http://127.0.0.1/admin/ -непосредственно админ панель (auth: superuser/password, либо правим в .env)
+    - при первом запуске(все автоматом): миграции, создание суперюзера, статика, заргузка данных в PG
+    - http://127.0.0.1/movies/<str:pk>/ API ручка(без парам, выдаст лист)
+  - etl:
+    - чекает PG и заливает изменения в ELASTIC
+  - movies_fastapi(API):
+    - http://127.0.0.1/movies_fastapi/api/openapi#/ - документация. доступна без авторизации, остальное только по токену.
+    - http://127.0.0.1/movies_fastapi/api/v1/films?sort=-imdb_rating&page[size]=50&page[number]=1
+    - http://127.0.0.1/movies_fastapi/api/v1/films?sort=-imdb_rating&filter[genre]=f24fd632-b1a5-4273-a835-0119bd12f829
+    - http://127.0.0.1/movies_fastapi/api/v1/films/search?query=captain&page[number]=1&page[size]=5
+    - http://127.0.0.1/movies_fastapi/api/v1/films/ffc3df9f-a17e-4bae-b0b6-c9c4da290fdd/
+    - http://127.0.0.1/movies_fastapi/api/v1/persons/search?query=captain&page[number]=1&page[size]=50
+    - http://127.0.0.1/movies_fastapi/api/v1/persons/ffe0d805-3595-4cc2-a892-f2bedbec4ac6/
+    - http://127.0.0.1/movies_fastapi/api/v1/persons/ffe0d805-3595-4cc2-a892-f2bedbec4ac6/film/
+    - http://127.0.0.1/movies_fastapi/api/v1/genres/
+    - http://127.0.0.1/movies_fastapi/api/v1/genres/f24fd632-b1a5-4273-a835-0119bd12f829/
+  - flask_auth(API):
+    - http://127.0.0.1/auth/docs/v1/ - документация
+    - http://127.0.0.1/auth/docs/v1/#/Auth/post_auth_api_v1_login -логин (суперюзер(с доступом ко всем ручкам):  superuser/superpass  - либо правим .env)
 
 # Проектная работа 7 спринта
 

@@ -4,8 +4,9 @@ import aiohttp
 import aioredis
 import uvicorn
 from elasticsearch import AsyncElasticsearch
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.responses import ORJSONResponse, Response
+from fastapi.security.http import HTTPBearer
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
@@ -19,7 +20,6 @@ app = FastAPI(
     openapi_url='/movies_fastapi/api/openapi.json',
     default_response_class=ORJSONResponse,
 )
-
 
 @app.on_event('startup')
 async def startup():
@@ -43,24 +43,25 @@ async def shutdown():
     await redis.redis.close()
     await elastic.es.close()
 
+JWT_scheme = HTTPBearer(auto_error=False)
+
 app.include_router(films.router, prefix='/movies_fastapi/api/v1/films',
-                   tags=['films'])
+                   tags=['films'], dependencies=[Depends(JWT_scheme)])
 app.include_router(genres.router, prefix='/movies_fastapi/api/v1/genres',
-                   tags=['genres'])
+                   tags=['genres'], dependencies=[Depends(JWT_scheme)])
 app.include_router(persons.router, prefix='/movies_fastapi/api/v1/persons',
-                   tags=['persons'])
+                   tags=['persons'], dependencies=[Depends(JWT_scheme)])
 
 
 @app.middleware('http')
 async def check_user(request: Request, call_next):
-    request_url = request.url
-    logging.error('INFO MIDDLEWARE request - %s', request.url)
-    if 'http://127.0.0.1/movies_fastapi/api/openapi' == request.url or 'http://127.0.0.1/movies_fastapi/api/openapi.json' == request.url:
+    # документация доступна без jwt. ну и тесты не переписывать же)
+    if request.url.path == app.docs_url or request.url.path == app.openapi_url or settings.tests:
         return await call_next(request)
     headers = request.headers
     async with aiohttp.ClientSession() as client:
         resp = await client.get(settings.check_user_url, headers=headers)
-        logging.error('INFO MIDDLEWARE status_code - %s', resp.status)
+        # logging.error('INFO MIDDLEWARE status_resp - %s', resp.status)
         if resp.status == 200:
             response = await call_next(request)
             return response

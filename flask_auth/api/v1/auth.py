@@ -3,6 +3,7 @@ from http import HTTPStatus as HTTP
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_current_user, get_jwt, jwt_required
 
+from flask_auth.services.utils import role_required
 from services.models_serv import AuthServ, UserServ
 from services.utils import check_user_agent, throttling_user_agent
 
@@ -70,12 +71,12 @@ def login():
           application/json:
             schema: LoginInputSchema
       responses:
-        '200':
+        200:
           description: Результат получения (REFRESH/ACCESS)
           content:
             application/json:
               schema: OutputSchema
-        '400':
+        400:
           description: Ошибка
           content:
             application/json:
@@ -104,9 +105,9 @@ def logout():
       summary: Logout (need access/refresh token)
       description: Принимает любой действующий токен(ACCESS/REFRESH) и отзывает все(ACCESS/REFRESH) ключи - помещаяя их в redis blocklist.
       responses:
-        '200':
+        200:
           description: Access/Refresh tokens revoked
-        '422':
+        422:
           description: UNPROCESSABLE ENTITY
       security:
         - jwt_key: []
@@ -126,9 +127,9 @@ def logout_all():
       summary: Logout all (need access/refresh token)
       description: Принимает любой действующий токен(ACCESS/REFRESH) и отзывает все(ACCESS/REFRESH) ключи, у всех user_agent's - помещаяя их в redis blocklist..
       responses:
-        '200':
+        200:
           description: All Access/Refresh tokens revoked
-        '422':
+        422:
           description: UNPROCESSABLE ENTITY
       security:
         - jwt_key: []
@@ -147,22 +148,22 @@ def refresh():
     post:
       summary: Обновляет пару (REFRESH/ACCESS) (need access/refresh token)
       responses:
-        '200':
+        200:
           description: Результат получения обновленного (REFRESH/ACCESS)
           content:
             application/json:
               schema: OutputSchema
-        '401':
+        401:
           description: Ошибка
           content:
             application/json:
               schema: ErrorSchema
-        '401':
+        401:
           description: Просроченный токен аторизации (REFRESH)
           content:
             application/json:
               schema: ErrorSchema
-        '422':
+        422:
           description: Невалидный заголовок авторизации (REFRESH)
           content:
             application/json:
@@ -199,14 +200,14 @@ def history_auth():
           schema:
             type: integer
       responses:
-        '200':
+        200:
           description: История авторизаций.
           content:
             application/json:
               schema: HistoryAuthSchema
         401:
           description: UNAUTHORIZED
-        '422':
+        422:
           description: UNPROCESSABLE ENTITY
       security:
         - jwt_key: []
@@ -222,4 +223,42 @@ def history_auth():
 @auth.route("/check_user", methods=["GET"])
 @jwt_required()
 def check_user():
-  return jsonify(), HTTP.OK
+    """
+    ---
+    get:
+      summary: check_user (need access token)
+      description: Ручка для микросервисов, проверяет валидность access ключа. Необходим Access token.
+      responses:
+        200:
+          description: OK
+        401:
+          description: UNAUTHORIZED
+      security:
+        - jwt_key: []
+      tags:
+        - Auth
+    """
+    return jsonify(), HTTP.OK
+
+@auth.route("/check_user_is_subscriber", methods=["GET"])
+@jwt_required()
+@role_required('admin')
+def check_user_is_subscriber():
+    """
+    ---
+    get:
+      summary: check_user (need access token)
+      description: Ручка для микросервисов, проверяет валидность access ключа и является ли владелец подписчиком. Необходим Access token.
+      responses:
+        200:
+          description: OK.
+        401:
+          description: UNAUTHORIZED
+        403:
+          description: FORBIDDEN
+      security:
+        - jwt_key: []
+      tags:
+        - Auth
+    """
+    return jsonify(), HTTP.OK

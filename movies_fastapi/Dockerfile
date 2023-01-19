@@ -1,6 +1,6 @@
 FROM python:3.10.9-slim
 
-WORKDIR /src
+WORKDIR /movies_fastapi
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt --no-cache-dir
 COPY . .
