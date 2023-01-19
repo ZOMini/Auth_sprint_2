@@ -30,8 +30,8 @@
 
 # Что имеем(на 19.01.23):
   - tests:
-    - docker-compose -f docker-compose-auth_test.yml up --build      - тесты flask_auth
-    - docker-compose -f docker-compose-api_test.yml up --build      - тесты movies_api
+    - docker-compose -f docker-compose-auth_test.yml up --build      (тесты flask_auth)
+    - docker-compose -f docker-compose-api_test.yml up --build      (тесты movies_api)
   - запуск всех сервисов:
     - docker-compose -f docker-compose-all_serv_prod.yml up --build
   - django admin panel:
