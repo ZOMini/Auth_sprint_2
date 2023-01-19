@@ -112,6 +112,8 @@ services:
   jagger:
     image: jaegertracing/all-in-one:latest
     container_name: jagger
+    volumes:
+      - jagger_data:/jagger/data
     ports:
       - "6831:6831/udp"
       - "16686:16686"
@@ -126,3 +128,4 @@ volumes:
   static_volume:
   etl_data:
   es_data:
+  jagger_data:
