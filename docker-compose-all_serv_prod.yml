@@ -108,12 +108,13 @@ services:
       - ./nginx/configs:/etc/nginx/conf.d:ro
     ports:
       - "80:80"
+    restart: always
 
-  jagger:
+  jaeger:
     image: jaegertracing/all-in-one:latest
-    container_name: jagger
+    container_name: jaeger
     volumes:
-      - jagger_data:/jagger/data
+      - jaeger_data:/jaeger/data
     ports:
       - "6831:6831/udp"
       - "16686:16686"
@@ -128,4 +129,4 @@ volumes:
   static_volume:
   etl_data:
   es_data:
-  jagger_data:
+  jaeger_data:
