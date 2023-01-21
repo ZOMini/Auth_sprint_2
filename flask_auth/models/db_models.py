@@ -61,7 +61,7 @@ class User(Base):
 
 def create_partition(target, connection, **kw) -> None:
     import datetime as dt
-    now_year = dt.datetime.utcnow().date().year
+    now_year = dt.datetime.utcnow().year
     # На всякий -1 год, типо dump-ы старые подгружать.
     # Так же можно усложнить, делать по месяцам например.
     for year in range(now_year - 1, now_year +2):
@@ -73,8 +73,6 @@ def create_partition(target, connection, **kw) -> None:
 class Auth(Base):
     __tablename__ = 'auth'
     __table_args__ = (
-        # ({'extend_existing': True}),
-        UniqueConstraint('id', 'data_time'),
         {
             'postgresql_partition_by': 'RANGE (data_time)',
             'listeners': [('after_create', create_partition)],
