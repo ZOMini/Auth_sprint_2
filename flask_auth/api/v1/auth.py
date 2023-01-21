@@ -1,3 +1,4 @@
+import logging
 from http import HTTPStatus as HTTP
 
 from flask import Blueprint, jsonify, request
@@ -238,11 +239,12 @@ def check_user():
       tags:
         - Auth
     """
+    logging.error('INFO USER_AGENT_PLATFORM - %s', request.user_agent)
     return jsonify(), HTTP.OK
 
 @auth.route("/check_user_is_subscriber", methods=["GET"])
 @jwt_required()
-@role_required('admin')
+@role_required('subscriber')
 def check_user_is_subscriber():
     """
     ---

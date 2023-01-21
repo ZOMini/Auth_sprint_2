@@ -2,7 +2,15 @@ import hashlib
 import uuid
 from hmac import compare_digest
 
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, String, Table
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    Table,
+    UniqueConstraint
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -50,20 +58,41 @@ class User(Base):
         '''Функция сравнивает пароли - нехешированный(in param) с хешированным(в базе).'''
         return compare_digest(self.password_hash(password, email), self.password)
 
+
+def create_partition(target, connection, **kw) -> None:
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "auth_2023" PARTITION OF "auth" FOR VALUES FROM ('2023-01-01') TO ('2023-12-31')"""
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "auth_2024" PARTITION OF "auth" FOR VALUES FROM ('2024-01-01') TO ('2024-12-31')"""
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "auth_2025" PARTITION OF "auth" FOR VALUES FROM ('2025-01-01') TO ('2025-12-31')"""
+    )
+
+
 class Auth(Base):
     __tablename__ = 'auth'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = (
+        # ({'extend_existing': True}),
+        UniqueConstraint('id', 'data_time'),
+        {
+            'postgresql_partition_by': 'RANGE (data_time)',
+            'listeners': [('after_create', create_partition)],
+        }
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True,
-                default=uuid.uuid4, unique=True, nullable=False)
-    user_id = Column(UUID, ForeignKey("users.id"))
+                default=uuid.uuid4, nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     user_agent = Column(String, nullable=True)
     u_a_hash = Column(BigInteger, nullable=True)
-    data_time = Column(DateTime(timezone=False), default=func.now())  # Дата логина.
+    data_time = Column(DateTime(timezone=False), default=func.now(),
+                       nullable=False, primary_key=True)  # Дата логина.
     refresh_token = Column(String, nullable=True)
     access_token = Column(String, nullable=True)
     tokens_time = Column(DateTime(timezone=False), default=func.now(),
-                         onupdate=func.current_timestamp())  # Дата последней выдачи ключей.
+                         onupdate=func.current_timestamp(), nullable=True)  # Дата последней выдачи ключей.
     user = relationship(User, back_populates="auth")
 
     def __init__(self, user_id: uuid, user_agent: str, u_a_hash: int,
@@ -76,7 +105,7 @@ class Auth(Base):
 
     def __repr__(self):
         return f'<Auth {self.data_time} - {self.user_agent}>'
- 
+
 
 class Role(Base):
     __tablename__ = "roles"

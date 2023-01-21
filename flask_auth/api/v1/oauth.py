@@ -19,7 +19,7 @@ def oauth_authorize():
     oauth_provider = OauthServ.check_source()
     oauth_provider.authorize_access_token()
     # как я понял в токен может сразу прилететь userinfo, надо чекать.
-    # Доступ к "1-му" access_token'у - oauth_provider.token - там первая часть инфы.
+    # Доступ к access_token'у - oauth_provider.token - там первая часть инфы.
     # logging.error('------token_info ---------- %s', oauth_provider.token)
     access_token, refresh_token = OauthServ.check_and_create_account(oauth_provider)
     return jsonify(access_token=access_token, refresh_token=refresh_token), HTTP.OK
