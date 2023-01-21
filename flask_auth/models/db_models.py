@@ -60,15 +60,14 @@ class User(Base):
 
 
 def create_partition(target, connection, **kw) -> None:
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "auth_2023" PARTITION OF "auth" FOR VALUES FROM ('2023-01-01') TO ('2023-12-31')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "auth_2024" PARTITION OF "auth" FOR VALUES FROM ('2024-01-01') TO ('2024-12-31')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "auth_2025" PARTITION OF "auth" FOR VALUES FROM ('2025-01-01') TO ('2025-12-31')"""
-    )
+    import datetime as dt
+    now_year = dt.datetime.utcnow().date().year
+    # На всякий -1 год, типо dump-ы старые подгружать.
+    # Так же можно усложнить, делать по месяцам например.
+    for year in range(now_year - 1, now_year +2):
+        connection.execute(
+            """CREATE TABLE IF NOT EXISTS "auth_%s" PARTITION OF "auth" FOR VALUES FROM ('%s-01-01') TO ('%s-12-31')""", year, year, year
+        )
 
 
 class Auth(Base):
