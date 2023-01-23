@@ -88,8 +88,8 @@ def throttling_user_agent(*req_roles: str):
             except Exception:
                 hash_u_a = user_agent_hash(request.headers.get('User-Agent', 'empty'))
                 ip = request.remote_addr
-                if jwt_redis_blocklist.get(hash_u_a + ip) is None:
-                    jwt_redis_blocklist.set(hash_u_a + ip, "", THROTTLING)
+                if jwt_redis_blocklist.get(str(hash_u_a) + ip) is None:
+                    jwt_redis_blocklist.set(str(hash_u_a) + ip, "", THROTTLING)
                     return fn(*args, **kwargs)
                 else:
                     return jsonify(msg='Try again later'), HTTP.FORBIDDEN
