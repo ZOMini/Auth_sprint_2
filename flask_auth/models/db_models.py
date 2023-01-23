@@ -2,15 +2,7 @@ import hashlib
 import uuid
 from hmac import compare_digest
 
-from sqlalchemy import (
-    BigInteger,
-    Column,
-    DateTime,
-    ForeignKey,
-    String,
-    Table,
-    UniqueConstraint
-)
+from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -51,7 +43,7 @@ class User(Base):
 
     def password_hash(self, password: str, email: str) -> str:
         '''Функция хеширует пароль(sha256 + стат. соль + дин. соль).'''
-        pw_hash = hashlib.sha256((password+SETT.SALT_PASSWORD+email).encode('utf-8')).hexdigest()
+        pw_hash = hashlib.sha256((password + SETT.SALT_PASSWORD + email).encode('utf-8')).hexdigest()
         return pw_hash
 
     def check_password(self, password: str, email: str) -> bool:
@@ -64,7 +56,7 @@ def create_partition(target, connection, **kw) -> None:
     now_year = dt.datetime.utcnow().year
     # На всякий -1 год, типо dump-ы старые подгружать.
     # Так же можно усложнить, делать по месяцам например.
-    for year in range(now_year - 1, now_year +2):
+    for year in range(now_year - 1, now_year + 2):
         connection.execute(
             """CREATE TABLE IF NOT EXISTS "auth_%s" PARTITION OF "auth" FOR VALUES FROM ('%s-01-01') TO ('%s-12-31')""", year, year, year
         )
@@ -98,7 +90,7 @@ class Auth(Base):
         self.user_agent = user_agent
         self.u_a_hash = u_a_hash
         self.access_token = access_token
-        self.refresh_token= refresh_token
+        self.refresh_token = refresh_token
 
     def __repr__(self):
         return f'<Auth {self.data_time} - {self.user_agent}>'

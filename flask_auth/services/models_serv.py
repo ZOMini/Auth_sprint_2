@@ -1,5 +1,6 @@
 from datetime import datetime
 from http import HTTPStatus as HTTP
+from typing import Any
 
 from flask import Response, jsonify, request
 from flask_jwt_extended import (
@@ -10,7 +11,6 @@ from flask_jwt_extended import (
     verify_jwt_in_request
 )
 from sqlalchemy import and_
-from typing_extensions import Self
 
 from db.db import db_session
 from db.redis import jwt_redis_blocklist
@@ -21,15 +21,15 @@ from services.utils import token_expire_time, user_agent_hash
 class UserServ(User):
 
     @classmethod
-    def get_obj_by_name(cls, name: str, email: bool = False) -> User | None:
+    def get_obj_by_name(cls, name: str, email: bool = False) -> 'User':
         '''Отдает обект по имени. Опционально по емайлу.'''
         if email:
             return db_session.query(User).filter(User.email == name).one_or_none()
         return db_session.query(User).filter(User.name == name).one_or_none()
 
     @classmethod
-    def create_user(cls, name: str, email: str, password: str, password2: str) -> Response:
-        '''Создаем User.'''     
+    def create_user(cls, name: str, email: str, password: str, password2: str) -> tuple[Response, HTTP]:
+        '''Создаем User.'''
         if password == password2 and len(password) >= 8:
             try:
                 user = User(name=name,
@@ -37,16 +37,16 @@ class UserServ(User):
                             password=password)
                 db_session.add(user)
                 db_session.commit()
-                return jsonify('User created. Login is email.'), HTTP.CREATED  
+                return jsonify('User created. Login is email.'), HTTP.CREATED
             except Exception as e:
                 db_session.rollback()
-                return jsonify(msg = f"Wrong email or password or name",
-                       err = e.args), HTTP.BAD_REQUEST
+                return jsonify(msg="Wrong email or password or name",
+                               err=e.args), HTTP.BAD_REQUEST
         else:
             return jsonify('password != password2 or length < 8'), HTTP.BAD_REQUEST
 
     @classmethod
-    def update_user(cls, name: str, email: str, pass_old: str, password: str, password2: str) -> Response:
+    def update_user(cls, name: str, email: str, pass_old: str, password: str, password2: str) -> tuple[Response, HTTP]:
         '''Изменяем User'''
         try:
             user = cls.get_obj_by_name(name)
@@ -57,17 +57,17 @@ class UserServ(User):
                     user.password = user.password_hash(password, user.email)
                     db_session.add(user)
                     db_session.commit()
-                    return jsonify('User update.'), HTTP.ACCEPTED  
+                    return jsonify('User update.'), HTTP.ACCEPTED
                 else:
                     return jsonify('password != password2 or length < 8'), HTTP.BAD_REQUEST
             raise Exception
         except Exception as e:
             db_session.rollback()
-            return jsonify(msg = f"Wrong email or password or name",
-                    err = e.args), HTTP.BAD_REQUEST
+            return jsonify(msg="Wrong email or password or name",
+                           err=e.args), HTTP.BAD_REQUEST
 
     @classmethod
-    def user_crud(cls) -> Response:
+    def user_crud(cls) -> tuple[Response, HTTP]:
         name = request.json.get('name', None)
         email = request.json.get('email', None)
         pass_old = request.json.get('pass_old', None)
@@ -87,7 +87,7 @@ class UserServ(User):
         return response
 
     @classmethod
-    def get_user_roles(cls, username: dict) -> Response:
+    def get_user_roles(cls, username: str) -> tuple[Response, HTTP]:
         '''Отдает лист ролей пользователя.'''
         user = cls.get_obj_by_name(username)
         if user is None:
@@ -98,7 +98,7 @@ class UserServ(User):
         return jsonify({'roles': list_roles}), HTTP.OK
 
     @classmethod
-    def add_or_del_role_user(cls, json: dict, add: bool = False) -> Response:
+    def add_or_del_role_user(cls, json: dict, add: bool = False) -> tuple[Response, HTTP]:
         '''Метод добавляет или удаляет роль пользователя.
         Добавляет все ключи в блоклист, при удалении. На выходе готовый Response.'''
         try:
@@ -120,8 +120,8 @@ class UserServ(User):
                 return jsonify('Remove a role from a user. All keys have been revoked'), HTTP.NO_CONTENT
         except Exception as e:
             db_session.rollback()
-            return jsonify(msg = f"Wrong role.id and user.id or see in err",
-                           err = e.args), HTTP.BAD_REQUEST
+            return jsonify(msg="Wrong role.id and user.id or see in err",
+                           err=e.args), HTTP.BAD_REQUEST
 
 
 class AuthServ(Auth):
@@ -135,9 +135,9 @@ class AuthServ(Auth):
         '''Метод создает новую запись в Auth.'''
         auth = cls(user_id=str(user.id),
                    user_agent=user_agent,
-                   u_a_hash= u_a_hash,
-                   access_token = access_token,
-                   refresh_token= refresh_token)
+                   u_a_hash=u_a_hash,
+                   access_token=access_token,
+                   refresh_token=refresh_token)
         db_session.add(auth)
         db_session.commit()
 
@@ -146,19 +146,19 @@ class AuthServ(Auth):
         ''' Метод формирует список авторизаций
         текущего пользователя через /login.
         Можно было через репр формировать, но вот так:)'''
-        user_list = [[datetime.isoformat(item.data_time), item.user_agent] for item in db_session.query(cls).filter(cls.user_id == user_id).order_by(cls.data_time.desc())[page*size:page*size+size]]
+        user_list = [[datetime.isoformat(item.data_time), item.user_agent] for item in db_session.query(cls).filter(cls.user_id == user_id).order_by(cls.data_time.desc())[page * size:page * size + size]]
         return user_list
 
     @classmethod
-    def last_auth(cls, user_id: str, u_a_hash: int) -> Self | None:
+    def last_auth(cls, user_id: str, u_a_hash: int) -> 'Auth':
         '''Метод отдает последнюю авторизацию по id пользователя и user_agent.'''
         if last_auth := db_session.query(cls).filter(and_(cls.user_id == str(user_id), cls.u_a_hash == u_a_hash)).order_by(cls.data_time.desc()).first():
             return last_auth
         return None
 
     @classmethod
-    def tokens_from_db(cls, user_id: str, u_a_hash: int) -> list[str] | list [None]:
-        '''Метод возвращает пару токенов ACCESS/REFRESH 
+    def tokens_from_db(cls, user_id: str, u_a_hash: int) -> tuple[Any, Any, Any]:
+        '''Метод возвращает пару токенов ACCESS/REFRESH
         и время их последнего обновления, из последней сессии Auth.'''
         # Upd. Добавил user_agent для отбора нужных для отзыва ключей.
         if token := db_session.query(cls.access_token, cls.refresh_token, cls.tokens_time).filter(and_(cls.user_id == str(user_id), cls.u_a_hash == u_a_hash)).order_by(cls.data_time.desc()).first():
@@ -199,9 +199,9 @@ class AuthServ(Auth):
         cls.add_old_tokens_in_block(user, u_a_hash)
         if login:
             cls.registry_auth(user=user, user_agent=user_agent,
-                               u_a_hash=u_a_hash,
-                               access_token=decode_access_token['jti'],
-                               refresh_token=decode_refresh_token['jti'])
+                              u_a_hash=u_a_hash,
+                              access_token=decode_access_token['jti'],
+                              refresh_token=decode_refresh_token['jti'])
         else:
             last_auth = cls.last_auth(user.id, u_a_hash)
             last_auth.access_token = decode_access_token['jti']
@@ -237,18 +237,18 @@ class AuthServ(Auth):
 class RoleServ(Role):
 
     @classmethod
-    def get_obj_by_role(cls, role: str) -> Self | None:
+    def get_obj_by_role(cls, role: str) -> 'Role':
         return db_session.query(Role).filter(Role.role == role).one_or_none()
-    
+
     @classmethod
-    def get_list_roles(cls) -> list[str]:
+    def get_list_roles(cls) -> tuple[Response, HTTP]:
         result = [item.role for item in db_session.query(Role).all()]
         if not result:
-            return jsonify(msg = f"Roles are missing"), HTTP.BAD_REQUEST
+            return jsonify(msg="Roles are missing"), HTTP.BAD_REQUEST
         return jsonify({'roles': result}), HTTP.OK
 
     @classmethod
-    def create_role(cls) -> Response:
+    def create_role(cls) -> tuple[Response, HTTP]:
         json = request.get_json()
         role = Role(role=json['role'])
         try:
@@ -256,11 +256,11 @@ class RoleServ(Role):
             db_session.commit()
         except Exception as e:
             db_session.rollback()
-            return jsonify(msg = f"Wrong role", err = e.args), HTTP.BAD_REQUEST
+            return jsonify(msg="Wrong role", err=e.args), HTTP.BAD_REQUEST
         return jsonify('Role created.'), HTTP.CREATED
 
     @classmethod
-    def update_role(cls) -> Response:
+    def update_role(cls) -> tuple[Response, HTTP]:
         json = request.get_json()
         try:
             role_obj = cls.get_obj_by_role(json['old_role'])
@@ -270,10 +270,10 @@ class RoleServ(Role):
             return jsonify('Role update.'), HTTP.CREATED
         except Exception as e:
             db_session.rollback()
-            return jsonify(msg = f"Wrong role", err = e.args), HTTP.BAD_REQUEST
+            return jsonify(msg="Wrong role", err=e.args), HTTP.BAD_REQUEST
 
     @classmethod
-    def delete_role(cls) -> Response:
+    def delete_role(cls) -> tuple[Response, HTTP]:
         json = request.get_json()
         try:
             role = cls.get_obj_by_role(json['role'])
@@ -282,10 +282,10 @@ class RoleServ(Role):
             return jsonify('Role delete.'), HTTP.NO_CONTENT
         except Exception as e:
             db_session.rollback()
-            return jsonify(msg = f"Wrong role", err = e.args), HTTP.BAD_REQUEST
+            return jsonify(msg="Wrong role", err=e.args), HTTP.BAD_REQUEST
 
     @classmethod
-    def role_crud(cls) -> Response:
+    def role_crud(cls) -> tuple[Response, HTTP]:
         if request.method == 'POST':
             response = cls.create_role()
         elif request.method == 'DELETE':

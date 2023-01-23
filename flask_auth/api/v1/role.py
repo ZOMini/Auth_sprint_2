@@ -6,6 +6,7 @@ from flask_auth.services.utils import role_required
 
 role = Blueprint('role', __name__)
 
+
 @role.route('/role_crud', methods=['GET', 'POST', 'DELETE', 'PUT'])
 @jwt_required()
 @role_required('admin')
@@ -87,7 +88,8 @@ def role_crud():
     response = RoleServ.role_crud()
     return response
 
-@role.route('/add_role_for_user', methods=['POST'])
+
+@role.route('/user/roles', methods=['POST'])
 @jwt_required()
 @role_required('admin')
 def add_role_for_user():
@@ -116,7 +118,8 @@ def add_role_for_user():
     response = UserServ.add_or_del_role_user(json, True)
     return response
 
-@role.route('/delete_role_from_user', methods=['DELETE'])
+
+@role.route('/user/roles', methods=['DELETE'])
 @jwt_required()
 @role_required('admin')
 def delete_role_from_user():
@@ -145,7 +148,8 @@ def delete_role_from_user():
     response = UserServ.add_or_del_role_user(json)
     return response
 
-@role.route('/get_user_roles/<string:user>', methods=['GET'])
+
+@role.route('/user/roles/<string:user>', methods=['GET'])
 @jwt_required()
 @role_required('admin')
 def get_user_roles(user: str):
