@@ -22,8 +22,6 @@ services:
     volumes:
       - ./django_admin_panel/scripts/schema.sql:/docker-entrypoint-initdb.d/schema.sql
       - movies_db_data:/var/lib/postgresql/data/
-    ports:
-      - 5432:5432
 
   redis:
     image: redis:alpine
