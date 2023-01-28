@@ -1,8 +1,10 @@
 from fastapi_cache.decorator import cache
+from opentelemetry import trace
 
 from db.abstract import AsyncCacheStorage, AsyncDataStorage
 
 BASE_CACHE_EXPIRE_IN_SECONDS = 30
+tracer = trace.get_tracer(__name__)
 
 
 class BaseEsId:
@@ -13,8 +15,9 @@ class BaseEsId:
 
     @cache(expire=BASE_CACHE_EXPIRE_IN_SECONDS)
     async def get_es_by_id(self, id: str) -> None | dict:
-        doc = await self.elastic.get(self.index, id)
-        return doc
+        with tracer.start_as_current_span('Elastic or Redis'):
+            doc = await self.elastic.get(self.index, id)
+            return doc
 
 
 class BaseEsList(BaseEsId):
@@ -34,9 +37,11 @@ class BaseEsList(BaseEsId):
             # Кеш создает ключ/кеш по параметрам функции,
             # их нужно передать явно.
             # Или переписать key_builder - чет лениво.
-            return await self.elastic.search(index, body, params=params)
-        doc = await for_cache(body, self.index, {
-            'sort': self.sort,
-            'from_': self.page * self.size,
-            'size': self.size})
-        return doc
+            resp = await self.elastic.search(index, body, params=params)
+            return resp
+        with tracer.start_as_current_span('Elastic or Redis'):
+            doc = await for_cache(body, self.index, {
+                'sort': self.sort,
+                'from_': self.page * self.size,
+                'size': self.size})
+            return doc

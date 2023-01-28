@@ -31,5 +31,9 @@ def init_tracer(app):
         @app.before_request
         def before_request():
             request_id = request.headers.get('X-Request-Id')
+            tracer = trace.get_tracer(__name__)
+            span = tracer.start_span(__name__)
+            span.set_attribute('http.request_id', request_id)
+            span.end()
             if not request_id:
                 raise RuntimeError('request id is required')

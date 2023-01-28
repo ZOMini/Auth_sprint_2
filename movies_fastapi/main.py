@@ -33,9 +33,6 @@ def get_application() -> FastAPI:
                        tags=['genres'], dependencies=[Depends(JWT_scheme)])
     app.include_router(persons.router, prefix='/movies_fastapi/api/v1/persons',
                        tags=['persons'], dependencies=[Depends(JWT_scheme)])
-    # Сюда можно запихнуть все middleware/on_event операции,
-    # и сделать их отдельные спаны, НО тогда все станет синхронным,
-    # поэтому оставим одним спаном.
     app = init_jaeger(app)
     return app
 
@@ -46,18 +43,25 @@ tracer = trace.get_tracer(__name__)
 
 @app.middleware('http')
 async def check_user(request: Request, call_next):
-    with tracer.start_as_current_span('Auth_FastAPI'):
+    with tracer.start_as_current_span('Movie_FastAPI_Full_Query') as mfa:
+        request_id = request.headers.get('X-Request-Id')
+        span = tracer.start_span('Create X-Request-Id')
+        span.set_attribute('http.request_id', request_id)
+        span.end()
         # документация доступна без jwt. ну и тесты не переписывать же)
         if request.url.path in [app.docs_url, app.openapi_url] or settings.tests:
             return await call_next(request)
         headers = request.headers
         async with aiohttp.ClientSession() as client:
-            resp = await client.get(settings.check_user_url, headers=headers)
-            # logging.error('INFO MIDDLEWARE status_resp - %s', resp.status)
-            if resp.status == 200:
-                response = await call_next(request)
-                return response
-            return Response(status_code=401)
+            with tracer.start_as_current_span('auth_api'):
+                resp = await client.get(settings.check_user_url, headers=headers)
+                # logging.error('INFO MIDDLEWARE status_resp - %s', resp.status)
+                mfa.add_event(f'Auth event, response status- {resp.status}')
+                trace.get_current_span().end()
+                if resp.status == 200:
+                    response = await call_next(request)
+                    return response
+                return Response(status_code=401)
 
 
 @app.on_event('startup')
