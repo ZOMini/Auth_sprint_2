@@ -47,6 +47,17 @@ class Settings(BaseSettings):
     VK_USERINFO_URL : str = Field('https://api.vk.com/method/users.get?v=5.131')
     VK_UNSUBSCRIBE_PAGE : str = Field('https://vk.com/settings?act=apps')
 
+
+    GOOGLE_CLIENT_ID: str = Field(None)
+    GOOGLE_CLIENT_SECRET: str = Field(None)
+    GOOGLE_ACCESS_TOKEN_URL: str = Field('https://www.googleapis.com/oauth2/v4/token')
+    GOOGLE_AUTHORIZE_URL: str = Field('https://accounts.google.com/o/oauth2/v2/auth')
+    GOOGLE_API_BASE_URL: str = Field('https://www.googleapis.com/oauth2/v2/')
+    GOOGLE_USERINFO_URL : str = Field('https://www.googleapis.com/oauth2/v2/userinfo')
+    GOOGLE_UNSUBSCRIBE_PAGE : str = Field('https://accounts.google.com/o/oauth2/revoke')
+
+
+
     class Config:
         env_file = './.env'
         env_file_encoding = 'utf-8'
