@@ -58,16 +58,16 @@ class OauthServ:
             logging.error('-----tokeninfo_email----- %s', oauth_app.token.get('email'))
             userinfo_dict = userinfo.json()['response'][0]
             logging.error('-----userinfo_dict----- %s', userinfo_dict)
-
-            return SocialUserModel(username=userinfo_dict.get('first_name')+'_'+userinfo_dict.get('last_name')+'-'+str(userinfo_dict.get('id')),                             email=oauth_app.token.get('email'))
-
-        if oauth_app.name == 'google':
+            return SocialUserModel(username=userinfo_dict.get('first_name') + '_'
+                                   + userinfo_dict.get('last_name') + '-'
+                                   + str(userinfo_dict.get('id')),
+                                   email=oauth_app.token.get('email'))
+        elif oauth_app.name == 'google':
             userinfo = oauth_app.get(settings.GOOGLE_USERINFO_URL)
             userinfo_dict: dict = userinfo.json()
             logging.error('-----userinfo_dict----- %s', userinfo_dict)
             return SocialUserModel(username=userinfo_dict.get('email'),
                                    email=userinfo_dict.get('email'))
-
 
     @classmethod
     def check_and_create_account(cls, oauth_app: FlaskOAuth2App) -> tuple[Response, HTTP]:
