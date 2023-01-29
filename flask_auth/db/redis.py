@@ -37,5 +37,6 @@ class RedisStorage(CacheStorage):
     def delete(self, key: str, **kwargs):
         self.redis.delete(key)
 
+
 redis = Redis(host=SETT.REDIS_HOST, port=SETT.REDIS_PORT, db=0, decode_responses=True)
 jwt_redis_blocklist = RedisStorage(redis)

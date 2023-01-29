@@ -1,4 +1,3 @@
-import logging
 import os
 import sys
 
@@ -6,11 +5,12 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 sys.path.append(f'{BASE_DIR}\\flask_auth')
-# logging.error('-- DEBUG -- BASE DIR -- %s',  BASE_DIR)
-# logging.error('-- DEBUG -- PYTHONPATH -- %s',  sys.path)
+
 from core.tracer import configure_tracer
 
 configure_tracer()
+
+from flask_migrate import Migrate
 
 from api.v1.auth import auth
 from api.v1.oauth import oauth
@@ -18,7 +18,7 @@ from api.v1.role import role
 from core.config import app, settings
 from core.oauth import init_oauth
 from core.tracer import init_tracer
-from db.db import init_db
+from db.db import DATA_BASE, db_session, init_db
 from docs.app import init_docs
 from services.jwt import *  # Регистрируем JWT
 
@@ -26,9 +26,17 @@ init_db()
 app.register_blueprint(role, url_prefix="/auth/api/v1")
 app.register_blueprint(auth, url_prefix="/auth/api/v1")
 app.register_blueprint(oauth, url_prefix="/auth/api/v1")
+app.config['SQLALCHEMY_DATABASE_URI'] = DATA_BASE
+migrate = Migrate(app, db_session)
 init_docs()
 init_oauth(app)
 init_tracer(app)
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
+
 
 if settings.DEBUG:
     from create_superuser import create_superuser

@@ -22,8 +22,6 @@ services:
     volumes:
       - ./django_admin_panel/scripts/schema.sql:/docker-entrypoint-initdb.d/schema.sql
       - movies_db_data:/var/lib/postgresql/data/
-    ports:
-      - 5432:5432
 
   redis:
     image: redis:alpine
@@ -114,13 +112,28 @@ services:
     image: jaegertracing/all-in-one:latest
     container_name: jaeger
     volumes:
-      - jaeger_data:/jaeger/data
+      - jaeger_volume:/badger
+    environment:
+      - SPAN_STORAGE_TYPE=badger
+      - BADGER_EPHEMERAL=false
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
     ports:
-      - "6831:6831/udp"
-      - "16686:16686"
-      - "16685:16685"
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 14250:14250
+      - 14268:14268
+      - 14269:14269
+      - 4317:4317
+      - 4318:4318
+      - 9411:9411
     depends_on:
       - flask_auth
+      - movies_fastapi
+    restart: on-failure
 
 volumes:
   auth_db_data:
@@ -129,4 +142,4 @@ volumes:
   static_volume:
   etl_data:
   es_data:
-  jaeger_data:
+  jaeger_volume:

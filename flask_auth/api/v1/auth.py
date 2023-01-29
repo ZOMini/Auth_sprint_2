@@ -10,7 +10,8 @@ from services.utils import check_user_agent, throttling_user_agent
 
 auth = Blueprint('auth', __name__)
 
-@auth.route('/user_crud', methods=['POST','PUT'])
+
+@auth.route('/user_crud', methods=['POST', 'PUT'])
 @jwt_required(optional=True)
 @throttling_user_agent()
 def user_crud():
@@ -58,6 +59,7 @@ def user_crud():
     response = UserServ.user_crud()
     return response
 
+
 @auth.route("/login", methods=["POST"])
 @throttling_user_agent()
 def login():
@@ -96,6 +98,7 @@ def login():
     access_token, refresh_token = AuthServ.login_refresh_service(user, True)
     return jsonify(access_token=access_token, refresh_token=refresh_token)
 
+
 @auth.route("/logout", methods=["DELETE"])
 @jwt_required(verify_type=False)
 @check_user_agent()
@@ -118,6 +121,7 @@ def logout():
     AuthServ.logout_service(get_current_user())
     return jsonify('All tokens revoked'), HTTP.OK
 
+
 @auth.route("/logout_all", methods=["DELETE"])
 @jwt_required(verify_type=False)
 @check_user_agent()
@@ -139,6 +143,7 @@ def logout_all():
     """
     AuthServ.logout_all_service(get_current_user())
     return jsonify('All tokens revoked'), HTTP.OK
+
 
 @auth.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
@@ -177,6 +182,7 @@ def refresh():
     user = get_current_user()
     access_token, refresh_token = AuthServ.login_refresh_service(user)
     return jsonify(access_token=access_token, refresh_token=refresh_token), HTTP.CREATED
+
 
 @auth.route("/history_auth", methods=["GET"])
 @jwt_required()
@@ -219,7 +225,8 @@ def history_auth():
     page = int(request.args.get('page', default=0))
     size = int(request.args.get('size', default=5))
     history = AuthServ.history_auth(jwt_dict['sub'], page, size)
-    return jsonify(history_auth = history)
+    return jsonify(history_auth=history)
+
 
 @auth.route("/check_user", methods=["GET"])
 @jwt_required()
@@ -241,6 +248,7 @@ def check_user():
     """
     logging.error('INFO USER_AGENT_PLATFORM - %s', request.user_agent)
     return jsonify(), HTTP.OK
+
 
 @auth.route("/check_user_is_subscriber", methods=["GET"])
 @jwt_required()

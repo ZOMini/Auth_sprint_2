@@ -1,4 +1,3 @@
-import logging
 from datetime import timedelta
 
 from flask import Flask
@@ -11,7 +10,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = Field(...)
     POSTGRES_PASSWORD: str = Field(...)
     POSTGRES_HOST: str = Field(...)
-    DB_DOCKER_HOST: str = Field(...) 
+    DB_DOCKER_HOST: str = Field(...)
     POSTGRES_PORT: int = Field(...)
 
     REDIS_HOST: str = Field(...)
@@ -24,28 +23,31 @@ class Settings(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRES: int = Field(...)  # Дней
     THROTTLING: int = Field(...)  # Секунд
     SALT_PASSWORD: str = Field(...)
-    SUPERUSER_NAME: str = Field(...) 
-    SUPERUSER_EMAIL: str = Field(...) 
+    SUPERUSER_NAME: str = Field(...)
+    SUPERUSER_EMAIL: str = Field(...)
     SUPERUSER_PASSWORD: str = Field(...)
 
     DEBUG: bool = Field(False)
     TESTS: bool = Field(False)
-    
+
     YANDEX_CLIENT_ID: str = Field(None)
     YANDEX_CLIENT_SECRET: str = Field(None)
     YANDEX_ACCESS_TOKEN_URL: str = Field('https://oauth.yandex.ru/token')
     YANDEX_AUTHORIZE_URL: str = Field('https://oauth.yandex.ru/authorize')
     YANDEX_API_BASE_URL: str = Field('https://login.yandex.ru/info')
-    YANDEX_USERINFO_URL : str = Field('https://login.yandex.ru/info?format=json')
-    YANDEX_UNSUBSCRIBE_PAGE : str = Field('https://passport.yandex.ru/profile/access')
-    
+    YANDEX_USERINFO_URL: str = Field('https://login.yandex.ru/info?format=json')
+    YANDEX_UNSUBSCRIBE_PAGE: str = Field('https://passport.yandex.ru/profile/access')
+
     VK_CLIENT_ID: str = Field(None)
     VK_CLIENT_SECRET: str = Field(None)
     VK_ACCESS_TOKEN_URL: str = Field('https://oauth.vk.com/access_token')
     VK_AUTHORIZE_URL: str = Field('https://oauth.vk.com/authorize')
     VK_API_BASE_URL: str = Field('https://api.vk.com/method')
-    VK_USERINFO_URL : str = Field('https://api.vk.com/method/users.get?v=5.131')
-    VK_UNSUBSCRIBE_PAGE : str = Field('https://vk.com/settings?act=apps')
+    VK_USERINFO_URL: str = Field('https://api.vk.com/method/users.get?v=5.131')
+    VK_UNSUBSCRIBE_PAGE: str = Field('https://vk.com/settings?act=apps')
+
+    JAEGER_HOST: str = Field('jaeger')
+    JAEGER_PORT: str = Field('6831')
 
 
     GOOGLE_CLIENT_ID: str = Field(None)
@@ -61,6 +63,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = './.env'
         env_file_encoding = 'utf-8'
+
 
 settings = Settings()
 

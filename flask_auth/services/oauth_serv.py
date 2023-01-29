@@ -2,7 +2,7 @@ import logging
 from http import HTTPStatus as HTTP
 
 from authlib.integrations.flask_client import FlaskOAuth2App, OAuth
-from flask import current_app, jsonify, request
+from flask import Response, current_app, jsonify, request
 from pydantic import BaseModel
 from werkzeug.exceptions import BadRequest, NotFound
 
@@ -14,8 +14,8 @@ from services.utils import generate_password
 
 
 class SocialUserModel(BaseModel):
-    username: str = None
-    email: str = None
+    username: str = ''
+    email: str = ''
 
 
 class OauthServ:
@@ -52,12 +52,13 @@ class OauthServ:
             logging.error('-----userinfo_dict----- %s', userinfo_dict)
             return SocialUserModel(username=userinfo_dict.get('login'),
                                    email=userinfo_dict.get('default_email'))
-        if oauth_app.name == 'vk':
+        elif oauth_app.name == 'vk':
             userinfo = oauth_app.get(settings.VK_USERINFO_URL)
             logging.error('-----tokeninfo----- %s', oauth_app.token)
             logging.error('-----tokeninfo_email----- %s', oauth_app.token.get('email'))
-            userinfo_dict: dict = userinfo.json()['response'][0]
+            userinfo_dict = userinfo.json()['response'][0]
             logging.error('-----userinfo_dict----- %s', userinfo_dict)
+
             return SocialUserModel(username=userinfo_dict.get('first_name')+'_'+userinfo_dict.get('last_name')+'-'+str(userinfo_dict.get('id')),                             email=oauth_app.token.get('email'))
 
         if oauth_app.name == 'google':
@@ -69,21 +70,20 @@ class OauthServ:
 
 
     @classmethod
-    def check_and_create_account(cls, oauth_app: FlaskOAuth2App):
+    def check_and_create_account(cls, oauth_app: FlaskOAuth2App) -> tuple[Response, HTTP]:
         '''Метод проверяет есть ли пользователь в базе, если нет - создает,
         возращает пару токенов для стандартного логина.
         Вся движуха расчитана на уникальность email'a, так же расчет на то,
         что если емаил есть в соцсети то он прошел валидацию и user его
         подтвердил.'''
         user_info = OauthServ.get_user_info(oauth_app)
-        if user := UserServ.get_obj_by_name(user_info.email, True):
-            pass
-        else:
+        user = UserServ.get_obj_by_name(user_info.email, True)
+        if not user:
             try:
                 # password отдельно в переменную для письма, тк в модели хеш.
                 password = generate_password(16)
                 # name в таком варианте должен быть уникальным.
-                user = User(user_info.username+'_from_'+oauth_app.name,
+                user = User(user_info.username + '_from_' + oauth_app.name,
                             user_info.email,
                             password)
                 db_session.add(user)
@@ -92,5 +92,5 @@ class OauthServ:
                 logging.error('INFO %s created - email sent.', user)
             except Exception as e:
                 db_session.rollback()
-                return jsonify(err = e.args), HTTP.BAD_REQUEST
+                return jsonify(err=e.args), HTTP.BAD_REQUEST
         return AuthServ.login_refresh_service(user, True)

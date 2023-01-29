@@ -13,7 +13,7 @@ from core.config import ACCESS_EXPIRES, REFRESH_EXPIRES, TESTS, THROTTLING
 from db.redis import jwt_redis_blocklist
 
 
-def role_required(*req_roles : str):
+def role_required(*req_roles: str):
     '''Декоратор только для запросов с JWT. Дополняет jwt_required,
     проверяет доступность по роли.
     Если роль superuser то доступны все ручки.'''
@@ -29,6 +29,7 @@ def role_required(*req_roles : str):
         return decorator
     return wrapper
 
+
 def token_expire_time(access: bool, token_time: datetime) -> timedelta | None:
     '''Вычисляет оставшееся время токена, если минус возвращает None,
     значит отзывать не нужно, токен уже не валидный.'''
@@ -40,10 +41,12 @@ def token_expire_time(access: bool, token_time: datetime) -> timedelta | None:
         return None
     return expire
 
+
 def user_agent_hash(user_agent: str) -> int:
     '''Функция хеширует user_agent, чтобы уменьшить размер,
     используем crc32 для скорости.'''
     return crc32(user_agent.encode('utf-8'))
+
 
 def check_user_agent():
     '''Декоратор сверяет user_agent текущий, с получившим токен.
@@ -62,7 +65,8 @@ def check_user_agent():
         return decorator
     return wrapper
 
-def throttling_user_agent(*req_roles : str):
+
+def throttling_user_agent(*req_roles: str):
     '''Декоратор не влияет на admin и superuser и указаных в param.
     Остальных 'душит' помещаяя в Redis.
     Дополняет jwt_required где это нужно, но и пустит без авторизации.'''
@@ -80,16 +84,18 @@ def throttling_user_agent(*req_roles : str):
                     for role in req_roles:
                         if role in jwt['roles']:
                             return fn(*args, **kwargs)
-                raise 
-            except:
+                raise Exception
+            except Exception:
                 hash_u_a = user_agent_hash(request.headers.get('User-Agent', 'empty'))
-                if jwt_redis_blocklist.get(hash_u_a) is None:
-                    jwt_redis_blocklist.set(hash_u_a, "", THROTTLING)
+                ip = request.remote_addr
+                if jwt_redis_blocklist.get(str(hash_u_a) + ip) is None:
+                    jwt_redis_blocklist.set(str(hash_u_a) + ip, "", THROTTLING)
                     return fn(*args, **kwargs)
                 else:
                     return jsonify(msg='Try again later'), HTTP.FORBIDDEN
         return decorator
     return wrapper
+
 
 def generate_password(length):
     letters_and_digits = string.ascii_letters + string.digits

@@ -7,7 +7,7 @@ from models.db_models import Role, User
 
 def create_superuser():
     if (not db_session.query(Role.query.filter(Role.role == 'superuser').exists()).scalar()
-        and not db_session.query(User.query.filter(User.name == settings.SUPERUSER_NAME).exists()).scalar()):
+            and not db_session.query(User.query.filter(User.name == settings.SUPERUSER_NAME).exists()).scalar()):
         superuser = User(settings.SUPERUSER_NAME,
                          settings.SUPERUSER_EMAIL,
                          settings.SUPERUSER_PASSWORD)
@@ -20,6 +20,7 @@ def create_superuser():
         logging.error('--- INFO --- Superuser created, email and password in .env')
     else:
         logging.error('--- INFO --- Superuser exist. Aborted.')
+
 
 if __name__ == '__main__':
     init_db()

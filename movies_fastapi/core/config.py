@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     project_name: str = Field(...)
     check_user_url: str = Field('http://flask_auth:5000/auth/api/v1/check_user')
     tests: bool = Field(False)
+    debug: bool = Field(False)
+    JAEGER_HOST: str = Field('jaeger')
+    JAEGER_PORT: str = Field('6831')
 
     class Config:
         env_file = '.env'

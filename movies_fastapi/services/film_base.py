@@ -32,12 +32,11 @@ class FilmService(BaseEsList):
     def _get_search_or_filter(self) -> dict:
         if self.filter:
             return {"query": {"nested": {
-                        "path": "genre", "query": {
-                            "bool": {"must": {"match": {
-                                "genre.id": f"{self.filter}"}}}}}}}
+                    "path": "genre", "query": {
+                        "bool": {"must": {"match": {
+                            "genre.id": f"{self.filter}"}}}}}}}
         if self.query:
-            return {
-                "query": {"bool": {"must": [{"multi_match": {
+            return {"query": {"bool": {"must": [{"multi_match": {
                     "query": self.query,
                     "fields": ["title", "description"]}}]}}}
         return {"query": {"match_all": {}}}
