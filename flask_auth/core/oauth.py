@@ -28,3 +28,15 @@ def init_oauth(app):
         authorize_url=settings.VK_AUTHORIZE_URL,
         client_kwargs={"token_placement": "uri", "token_endpoint_auth_method": "client_secret_post", "scope": "email"}
     )
+
+    oauth.register(
+        'google',
+        response_type='code',
+        server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+        client_id=settings.GOOGLE_CLIENT_ID,
+        client_secret=settings.GOOGLE_CLIENT_SECRET,
+        api_base_url=settings.GOOGLE_API_BASE_URL,
+        access_token_url=settings.GOOGLE_ACCESS_TOKEN_URL,
+        authorize_url=settings.GOOGLE_AUTHORIZE_URL,
+        client_kwargs={"scope": "openid profile email"}
+    )
