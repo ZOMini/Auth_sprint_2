@@ -1,9 +1,18 @@
-# Для проверки:
-    https://github.com/ZOMini/Auth_sprint_2 - репозиторий
-    https://github.com/ZOMini/Auth_sprint_2/invitations - приглашение
-    группа 13 - Пирогов Виталий/Игорь Синякин/Малик Гасанов (@malikzevs @ee2 @sinyakinmail - в пачке) 
+# Авторизация.
 
-# Запуск:
+## Описание
+  - Микросервис авторизации.
+  - Взаимодействует с ранее написанными сервисами [ETL, Django API, Django Admin](https://github.com/ZOMini/new_admin_panel_sprint_3) [FastAPI movie service](https://github.com/ZOMini/Async_API_sprint_2).
+  - Микросервис работает с парой(access, refresh) JWT токенов.
+  - Позволяет авторизоваться с помощью аккаунтов (Twitter, Facebook, VK, Google, Yandex, Mail).
+  - Трассировка запросов с помощью Jaeger (+ RequestID от Nginx - прокидываем по сервисам - видим по какому запросу происходит движение между сервисами).
+
+## Стек
+  - Django, DRF, FastAPI, Elastic, Postgres, SQLlite, SQLAlchemy, Redis, Authlib(OAuth 2.0), JSON Web Tokens(JWT), Jaeger(Trace)
+
+
+## Запуск:
+  - заполняем .env (см. .env.template)
   - oauth - update:
     - 1-я проблема локально не подебажить под виндой, так как gunicorn под виндой не пашет, т.е. только в докере/linux
     - 2-я что бы callback-и прилетали от провайдера, нужен открытый порт на роутере(я в роутере прописал NAT) - [router](https://github.com/ZOMini/Auth_sprint_2/blob/main/router.jpg)
@@ -28,7 +37,7 @@
     -  Доступ к PG: в терминале {docker exec -it auth_db sh} в шеле: {psql -U app -h localhost -d auth_db}   {pw:123qwe} - SELECT * FROM users;
     -  Доступ к redis: в терминале {docker exec -it redis sh} в шеле: {redis-cli} - {keys *};
 
-# Что имеем(на 19.01.23):
+## Что имеем(на 19.01.23):
   - tests:
     - docker-compose -f docker-compose-auth_test.yml up --build      (тесты flask_auth)
     - docker-compose -f docker-compose-api_test.yml up --build      (тесты movies_api)
@@ -48,7 +57,7 @@
     - http://127.0.0.1/auth/docs/v1/ - документация
     - http://127.0.0.1/auth/docs/v1/#/Auth/post_auth_api_v1_login -логин (суперюзер(с доступом ко всем ручкам):  superuser/superpass  - либо правим .env)
 
-# Проектная работа 7 спринта
+## Проектная работа 7 спринта
 
 Упростите регистрацию и аутентификацию пользователей в Auth-сервисе, добавив вход через социальные сервисы. Список сервисов выбирайте исходя из целевой аудитории онлайн-кинотеатра — подумайте, какими социальными сервисами они пользуются. Например, использовать [OAuth от Github](https://docs.github.com/en/free-pro-team@latest/developers/apps/authorizing-oauth-apps){target="_blank"} — не самая удачная идея. Ваши пользователи не разработчики и вряд ли имеют аккаунт на Github. А вот добавить Twitter, Facebook, VK, Google, Yandex или Mail будет хорошей идеей.
 
@@ -68,3 +77,8 @@
 Реализуйте возможность открепить аккаунт в соцсети от личного кабинета. 
 
 Решение залейте в репозиторий текущего спринта и отправьте на ревью.
+
+## Для проверки:
+    https://github.com/ZOMini/Auth_sprint_2 - репозиторий
+    https://github.com/ZOMini/Auth_sprint_2/invitations - приглашение
+    группа 13 - Пирогов Виталий/Игорь Синякин/Малик Гасанов (@malikzevs @ee2 @sinyakinmail - в пачке) 

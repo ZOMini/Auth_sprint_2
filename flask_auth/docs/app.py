@@ -1,7 +1,7 @@
 from flask_swagger_ui import get_swaggerui_blueprint as swaggerui
 
 from core.config import app
-from docs.v1.config import *
+from docs.v1.config import API_URL, CONFIG, SWAGGER_URL
 from docs.v1.routes import swagger
 
 
