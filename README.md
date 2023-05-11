@@ -10,7 +10,7 @@
 ## Стек
   - Django, DRF, FastAPI, Elastic, Postgres, SQLlite, SQLAlchemy, Redis, Authlib(OAuth 2.0), JSON Web Tokens(JWT), Jaeger(Trace)
 
-
+ 
 ## Запуск:
   - заполняем .env (см. .env.template)
   - oauth - update:
